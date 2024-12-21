@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
+import pathlib
 
 import leafmap.foliumap as leafmap
 
@@ -14,10 +15,10 @@ st.set_page_config(
 # Add Title
 st.title("Weekly Dance Events")
 
+# Load example data
 @st.cache_data
 def fetch_data(): 
-    df = pd.read_clipboard()
-    # df = pd.read_csv(Path.cwd()/"dc-triangle.csv")
+    df = pd.read_csv(pathlib.Path.cwd()/"dc-triangle.csv")
     df[['latitude', 'longitude']] = df.Lat_long.str.split(",", expand = True)
     df['latitude'] = df['latitude'].astype(dtype=np.float)
     df['longitude'] = df['longitude'].astype(dtype=np.float)
@@ -28,6 +29,7 @@ def fetch_data():
 
 df = fetch_data()
 
+# Setup two filters (will change set-up later)
 col1, col2 = st.columns(2)
 
 default_city_selection = df[df.city.isin(st.session_state.city)].city.unique() if "city" in st.session_state else None
@@ -80,6 +82,7 @@ regions = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data
 states = "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/us_states.json"
 
 m.add_geojson(states, layer_name="US States")
+# Cities points 
 # m.add_points_from_xy(
 #     cities,
 #     x="longitude",
