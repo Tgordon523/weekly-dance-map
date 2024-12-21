@@ -18,7 +18,7 @@ st.title("Weekly Dance Events")
 # Load example data
 @st.cache_data
 def fetch_data(): 
-    df = pd.read_csv(pathlib.Path.cwd()/"dc-triangle.csv")
+    df = pd.read_csv(pathlib.Path.cwd()/ "data" / "example_data_dc_area.csv")
     df[['latitude', 'longitude']] = df.Lat_long.str.split(",", expand = True)
     df['latitude'] = df['latitude'].astype(dtype=np.float)
     df['longitude'] = df['longitude'].astype(dtype=np.float)
