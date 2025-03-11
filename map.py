@@ -73,7 +73,8 @@ def fetch_data():
 
 
 df = fetch_data()
-
+st.dataframe(df)
+# df.sort_values(by="", inplace=True)
 # Setup two filters (will change set-up later)
 col1, col2 = st.columns(2)
 
@@ -97,9 +98,10 @@ if city_filter:
     df = df.loc[city_mask]
     t = df.days.unique()
     subdict = {x: day_palette_dict[x] for x in t if x in day_palette_dict}
-    st.write(subdict, [k for k in subdict.values()])
-    day_palette = day_palette[:t]
-
+    new_colors = [k for k in subdict.values()]
+    st.write(day_palette_dict, new_colors)
+    day_palette = new_colors
+    # st.write(day_palette)
 
 # st.dataframe(df)
 m = leafmap.Map(center=(36, -80),zoom=4, measure_control=False, draw_control=False)
@@ -109,7 +111,7 @@ states = "https://raw.githubusercontent.com/python-visualization/folium-example-
 
 # m.add_geojson(states, layer_name="US States")
 # Cities points
-df = df.sort_values(by="days")
+df.sort_values(by="weekday", inplace=True)
 m.add_points_from_xy(
     df[["days", "Time", "Title", "Venue", "Address", "Cost", "Longitude", "Latitude"]],
     x="Longitude",
@@ -127,6 +129,7 @@ col1_bar, col2_bar = st.columns(2)
 st.write()
 
 col1_bar.bar_chart(df.days.value_counts().reset_index().sort_values(by="days"), x="days", y='count', x_label="Events per Day", horizontal=True)
+col2_bar.bar_chart(df.City.value_counts().reset_index().sort_values(by="City"), x="days", y='count', x_label="Events per Day", horizontal=True)
 # st.write(df.groupby("Venue")["Title"].count())
 
 st.write(
