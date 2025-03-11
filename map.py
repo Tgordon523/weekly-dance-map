@@ -7,13 +7,13 @@ import leafmap.foliumap as leafmap
 
 # Adjust the width of the Streamlit page
 st.set_page_config(
-    page_title="Weekly Dance Events",
+    page_title="Only Weeklies",
     layout="wide",
-    # initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded"
 )
 
 # Add Title
-st.title("Weekly Dance Events")
+st.title("Only Weeklies")
 
 # Week Color Palettes
 # day_palette = [
@@ -38,17 +38,28 @@ day_palette = [
     #    '#d53e4f'
 ]
 
+day_palette_dict = {
+    "Monday":"darkred",
+    "Tuesday":"red",
+    "Wednesday":"orange",
+    "Thursday":"green",
+    "Friday":"darkgreen",
+    "Saturday":"blue",
+    "Sunday":"darkblue",
+    #    '#d53e4f'
+}
+
 
 # Load example data
 @st.cache_data
 def fetch_data():
-    p = pathlib.Path.cwd() / "example_data_dc_area.csv"
+    p = pathlib.Path.cwd() / "data" / "full_output.csv"
     df = pd.read_csv(p)
     # df = pd.read_clipboard()
-    df[["latitude", "longitude"]] = df.Lat_long.str.split(",", expand=True)
-    df["latitude"] = df["latitude"].astype(float)
-    df["longitude"] = df["longitude"].astype(float)
-    df["city"] = df["Address"].str.split(",", expand=True)[1]
+    # df[["latitude", "longitude"]] = df.Lat_long.str.split(",", expand=True)
+    # df["latitude"] = df["latitude"].astype(float)
+    # df["longitude"] = df["longitude"].astype(float)
+    # df["city"] = df["Address"].str.split(",", expand=True)[1]
     df["state"] = (
         df["Address"]
         .str.extractall(r"(\s[A-Z]{2},)")
@@ -67,34 +78,42 @@ df = fetch_data()
 col1, col2 = st.columns(2)
 
 default_city_selection = (
-    df[df.city.isin(st.session_state.city)].city.unique()
-    if "city" in st.session_state
+    df[df.City.isin(st.session_state.City)].City.unique()
+    if "City" in st.session_state
     else None
 )
 city_filter = col1.multiselect(
     label="select cities",
-    options=df.city.unique(),
+    options=df.City.unique(),
     default=default_city_selection,
-    key="city",
+    key="City",
 )
 
+
+
 if city_filter:
-    city_mask = df["city"].isin(city_filter)
+    # print(df.day.nunique())
+    city_mask = df["City"].isin(city_filter)
     df = df.loc[city_mask]
+    t = df.days.unique()
+    subdict = {x: day_palette_dict[x] for x in t if x in day_palette_dict}
+    st.write(subdict, [k for k in subdict.values()])
+    day_palette = day_palette[:t]
+
 
 # st.dataframe(df)
-m = leafmap.Map(center=(40, -80),zoom=6, measure_control=False, draw_control=False)
+m = leafmap.Map(center=(36, -80),zoom=4, measure_control=False, draw_control=False)
 # cities = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_cities.csv"
 # regions = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_regions.geojson"
 states = "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/us_states.json"
 
 # m.add_geojson(states, layer_name="US States")
 # Cities points
-
+df = df.sort_values(by="days")
 m.add_points_from_xy(
-    df[["days", "Time", "Title", "Venue", "Address", "Cost", "longitude", "latitude"]],
-    x="longitude",
-    y="latitude",
+    df[["days", "Time", "Title", "Venue", "Address", "Cost", "Longitude", "Latitude"]],
+    x="Longitude",
+    y="Latitude",
     color_column="days",
     prefix='glyphicon',
     marker_colors=day_palette,
@@ -104,6 +123,10 @@ m.add_points_from_xy(
 # st.cache_resource
 m.to_streamlit(height=700)
 
+col1_bar, col2_bar = st.columns(2)
+st.write()
+
+col1_bar.bar_chart(df.days.value_counts().reset_index().sort_values(by="days"), x="days", y='count', x_label="Events per Day", horizontal=True)
 # st.write(df.groupby("Venue")["Title"].count())
 
 st.write(
