@@ -4,7 +4,6 @@ import streamlit as st
 import pathlib
 
 import plotly.express as px
-import leafmap.foliumap as leafmap
 
 # Adjust the width of the Streamlit page
 st.set_page_config(
@@ -14,7 +13,7 @@ st.set_page_config(
 # Add Title
 st.title("Only Weeklies")
 
-# Colored specified dict 
+# Colored specified dict
 # day_palette_dict = {
 #     "Monday": "#3288bd",
 #     "Tuesday": "#66c2a5",
