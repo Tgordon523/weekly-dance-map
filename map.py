@@ -14,16 +14,17 @@ st.set_page_config(
 # Add Title
 st.title("Only Weeklies")
 
-day_palette_dict = {
-    "Monday": "#3288bd",
-    "Tuesday": "#66c2a5",
-    "Wednesday": "#abdda4",
-    "Thursday": "#e6f598",
-    "Friday": "#fee08b",
-    "Saturday": "#fdae61",
-    "Sunday": "#f46d43",
-    "Multiple": "#d53e4f",
-}
+# Colored specified dict 
+# day_palette_dict = {
+#     "Monday": "#3288bd",
+#     "Tuesday": "#66c2a5",
+#     "Wednesday": "#abdda4",
+#     "Thursday": "#e6f598",
+#     "Friday": "#fee08b",
+#     "Saturday": "#fdae61",
+#     "Sunday": "#f46d43",
+#     "Multiple": "#d53e4f",
+# }
 
 
 # Load example data
@@ -46,9 +47,7 @@ def fetch_data():
 df = fetch_data()
 df["size"] = 40
 
-# col1, _, _ = st.columns(3)
 with st.sidebar:
-    # st.write("This a dashboard to view latin dance socials that happen every week. The data is static and it assumes that these events occur every week even if there is a holiday or unspecified reason. This data is collected from various websites and determined to be a weekly event if there are multiple occurences week after week")
     default_city_selection = (
         df[df.City.isin(st.session_state.City)].City.unique()
         if "City" in st.session_state
@@ -71,24 +70,20 @@ with st.sidebar:
     )
     st.text("")
     st.markdown(
-        "The data is static and it assumes that these events occur every week even if there is a holiday or unspecified reason. This data is collected from various websites. It is determined to be a weekly event if there are multiple occurences week after week"
+        "The data is static, and I plan to update it quarterly. It assumes that these events occur every week, even if there is a holiday or unspecified reason. This data is collected from various websites. It is determined to be a weekly event if there are multiple occurences week after week"
         ""
     )
+    # Assign days dict accordingly (not used but just saving)
     # t = df.days.unique()
     # subdict = {x: day_palette_dict[x] for x in t if x in day_palette_dict}
     # new_colors = [k for k in subdict.values()]
     # st.write(day_palette_dict, new_colors)
     # day_palette = new_colors
     # st.write(day_palette)
+    # grouped_days_df_complete["color"] = grouped_days_df_complete["Marker"].map(
+    #     day_palette_dict
+    # )
 
-# st.dataframe(df)
-# m = leafmap.Map(center=(36, -80),zoom=4, measure_control=False, draw_control=False)
-# cities = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_cities.csv"
-# regions = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_regions.geojson"
-states = "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/us_states.json"
-
-# m.add_geojson(states, layer_name="US States")
-# Cities points
 grouped_days_df = (
     (df.groupby("Venue")["Title"].count().reset_index())
     .merge(
@@ -112,12 +107,8 @@ grouped_days_df_complete["weekday"] = np.where(
     grouped_days_df_complete.Title > 1, 8, grouped_days_df_complete.weekday
 )
 grouped_days_df_complete.sort_values(by="weekday", inplace=True)
-# st.dataframe(grouped_days_df_complete)
 
 df.sort_values(by="weekday", inplace=True)
-# grouped_days_df_complete["color"] = grouped_days_df_complete["Marker"].map(
-#     day_palette_dict
-# )
 
 fig = px.scatter_map(
     grouped_days_df_complete,
@@ -129,8 +120,6 @@ fig = px.scatter_map(
     size_max=40,
     hover_name="Venue",
     color_discrete_sequence=px.colors.qualitative.G10,
-    # color_continuous_scale=["green", "blue"],
-    # hover_data={'value': True, 'day': True, 'lat': False, 'lon': False},
     zoom=4.5,
     title="North America Weeklies",
 )
@@ -140,8 +129,6 @@ fig.update_layout(
     legend=dict(
         x=0,
         y=1,
-        # traceorder="reversed",
-        # title_font_family="Times New Roman",
         font=dict(family="Courier", size=12, color="black"),
         bgcolor="LightSteelBlue",
         bordercolor="Black",
