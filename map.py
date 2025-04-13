@@ -14,29 +14,6 @@ st.set_page_config(
 # Add Title
 st.title("Only Weeklies")
 
-# Week Color Palettes
-# day_palette = [
-#     "#3288bd",
-#     "#66c2a5",
-#     "#abdda4",
-#     "#e6f598",
-#     "#fee08b",
-#     "#fdae61",
-#     "#f46d43",
-#     # '#d53e4f'
-# ]
-
-day_palette = [
-    "darkred",
-    "red",
-    "orange",
-    "green",
-    "darkgreen",
-    "blue",
-    "darkblue",
-    #    '#d53e4f'
-]
-
 day_palette_dict = {
     "Monday": "#3288bd",
     "Tuesday": "#66c2a5",
@@ -52,13 +29,8 @@ day_palette_dict = {
 # Load example data
 @st.cache_data
 def fetch_data():
-    p = pathlib.Path.cwd() / "data" / "full_output.csv"
+    p = pathlib.Path.cwd() / "data" / "full_output_20250409.csv"
     df = pd.read_csv(p)
-    # df = pd.read_clipboard()
-    # df[["latitude", "longitude"]] = df.Lat_long.str.split(",", expand=True)
-    # df["latitude"] = df["latitude"].astype(float)
-    # df["longitude"] = df["longitude"].astype(float)
-    # df["city"] = df["Address"].str.split(",", expand=True)[1]
     df["state"] = (
         df["Address"]
         .str.extractall(r"(\s[A-Z]{2},)")
@@ -76,6 +48,7 @@ df["size"] = 40
 
 # col1, _, _ = st.columns(3)
 with st.sidebar:
+    # st.write("This a dashboard to view latin dance socials that happen every week. The data is static and it assumes that these events occur every week even if there is a holiday or unspecified reason. This data is collected from various websites and determined to be a weekly event if there are multiple occurences week after week")
     default_city_selection = (
         df[df.City.isin(st.session_state.City)].City.unique()
         if "City" in st.session_state
@@ -83,16 +56,24 @@ with st.sidebar:
     )
     city_filter = st.multiselect(
         label="select cities",
-        options=df.City.unique(),
+        options=sorted(df.City.unique()),
         default=default_city_selection,
         key="City",
     )
-
 
     if city_filter:
         # print(df.day.nunique())
         city_mask = df["City"].isin(city_filter)
         df = df.loc[city_mask]
+
+    st.markdown(
+        """***This a dashboard to view latin dance socials that happen every week.***"""
+    )
+    st.text("")
+    st.markdown(
+        "The data is static and it assumes that these events occur every week even if there is a holiday or unspecified reason. This data is collected from various websites. It is determined to be a weekly event if there are multiple occurences week after week"
+        ""
+    )
     # t = df.days.unique()
     # subdict = {x: day_palette_dict[x] for x in t if x in day_palette_dict}
     # new_colors = [k for k in subdict.values()]
@@ -119,7 +100,9 @@ grouped_days_df = (
 )
 
 grouped_days_df_complete = grouped_days_df.merge(
-    df[["Venue", "City", "Latitude", "Longitude", "size", "weekday"]], on="Venue", how="left"
+    df[["Venue", "City", "Latitude", "Longitude", "size", "weekday"]],
+    on="Venue",
+    how="left",
 ).drop_duplicates(subset="Venue")
 
 grouped_days_df_complete["Marker"] = np.where(
@@ -132,9 +115,9 @@ grouped_days_df_complete.sort_values(by="weekday", inplace=True)
 # st.dataframe(grouped_days_df_complete)
 
 df.sort_values(by="weekday", inplace=True)
-grouped_days_df_complete["color"] = grouped_days_df_complete["Marker"].map(
-    day_palette_dict
-)
+# grouped_days_df_complete["color"] = grouped_days_df_complete["Marker"].map(
+#     day_palette_dict
+# )
 
 fig = px.scatter_map(
     grouped_days_df_complete,
@@ -173,26 +156,26 @@ st.plotly_chart(fig, height=700)
 st.text("")
 st.text("")
 st.text("")
-# st.plotly_chart(fig)
-# st.plotly_chart(fig,height=1200, zoom=5)
-# m.to_streamlit(height=700)
-# st.write(df.columns)
-col1_bar, col2_bar = st.columns(2)
 
-col1_bar.bar_chart(
+col1_day_events_bar, _ = st.columns(2)
+
+col1_day_events_bar.bar_chart(
     df.days.value_counts().reset_index().sort_values(by="days"),
     x="days",
     y="count",
     x_label="Events per Day",
     horizontal=True,
 )
-col2_bar.bar_chart(
-    df.City.value_counts().reset_index().sort_values(by="City"),
-    x="City",
-    y="count",
-    x_label="Events per Day",
-    horizontal=True,
-)
+
+col1_city_events_bar, _ = st.columns(2)
+if not city_filter:
+    col1_city_events_bar.bar_chart(
+        df.City.value_counts().reset_index().sort_values(by="City"),
+        x="City",
+        y="count",
+        x_label="Events per Day",
+        horizontal=True,
+    )
 
 st.write(df[["days", "Time", "Venue", "Address"]])
 
