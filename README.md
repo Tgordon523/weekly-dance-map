@@ -9,16 +9,13 @@ Project idea to create a map visualizing weekly latin dance events. Data is coll
 
 ### Dependencies
 
-* Requires Streamlit, Pandas
+* Requires Streamlit, Pandas, uv
 
 ### Installing
 
 * Create a venv and Pip install from requirements.txt 
+* If using uv, running the command below with uv appended <code>uv run streamlit run app.py</code>
 * TODO : Source dataset to make available and implement option for crowdsourcing data and verification of said data. 
-
-```
-pip install -r requirements.txt
-```
 
 ### Executing program
 
@@ -26,7 +23,7 @@ pip install -r requirements.txt
     * Likely will change once it is actually published in Streamlit
 
 ```
-streamlit run map.py
+streamlit run app.py
 ```
 
 ## Help
