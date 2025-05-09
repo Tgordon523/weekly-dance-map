@@ -18,6 +18,7 @@ lib/
 lib64/
 parts/
 sdist/
+src/
 var/
 wheels/
 share/python-wheels/
@@ -98,7 +99,9 @@ ipython_config.py
 #   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
 #   commonly ignored for libraries.
-#uv.lock
+*.lock
+.DS_Store
+.python-version
 
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
