@@ -29,7 +29,8 @@ st.title("Only Weeklies")
 # Load example data
 @st.cache_data
 def fetch_data():
-    p = pathlib.Path.cwd() / "data" / "full_output_20250409.csv"
+    p = pathlib.Path.cwd() / "data" / "full_output_2025-05-22.csv"
+    path_test_file = 'https://raw.githubusercontent.com/Tgordon523/weekly-dance-map/a63257f9f447c4808dbb38088d9e016b81c3aeea/data/test_data.csv'
     df = pd.read_csv(p)
     df["state"] = (
         df["Address"]
@@ -70,7 +71,7 @@ def main():
         )
         st.text("")
         st.markdown(
-            "The data is static, and I plan to update it quarterly. It assumes that these events occur every week, even if there is a holiday or unspecified reason. This data is collected from various websites. It is determined to be a weekly event if there are multiple occurences week after week"
+            "The data is static, and I plan to update it quarterly. It assumes that these events occur every week, even if there is a holiday or unspecified reason. This data is collected from various websites. It is determined to be a weekly event if there are multiple occurences week after week. The finalized processed data address line is passed to Radar for latitude and longitude coordinates for mapping"
             ""
         )
         # Assign days dict accordingly (not used but just saving)
