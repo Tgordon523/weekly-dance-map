@@ -30,3 +30,6 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/weekly_dance_map"]
+
+[tool.poetry]
+package-mode = false
