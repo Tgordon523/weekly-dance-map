@@ -13,24 +13,12 @@ st.set_page_config(
 # Add Title
 st.title("Only Weeklies")
 
-# Colored specified dict
-# day_palette_dict = {
-#     "Monday": "#3288bd",
-#     "Tuesday": "#66c2a5",
-#     "Wednesday": "#abdda4",
-#     "Thursday": "#e6f598",
-#     "Friday": "#fee08b",
-#     "Saturday": "#fdae61",
-#     "Sunday": "#f46d43",
-#     "Multiple": "#d53e4f",
-# }
-
 
 # Load example data
 @st.cache_data
 def fetch_data():
-    p = pathlib.Path.cwd() / "data" / "full_output_2025-05-22.csv"
-    path_test_file = 'https://raw.githubusercontent.com/Tgordon523/weekly-dance-map/a63257f9f447c4808dbb38088d9e016b81c3aeea/data/test_data.csv'
+    # p = pathlib.Path.cwd() / "data" / "full_output_2025-05-22.csv"
+    p = "https://raw.githubusercontent.com/Tgordon523/weekly-dance-map/a63257f9f447c4808dbb38088d9e016b81c3aeea/data/test_data.csv"
     df = pd.read_csv(p)
     df["state"] = (
         df["Address"]
@@ -71,19 +59,9 @@ def main():
         )
         st.text("")
         st.markdown(
-            "The data is static, and I plan to update it quarterly. It assumes that these events occur every week, even if there is a holiday or unspecified reason. This data is collected from various websites. It is determined to be a weekly event if there are multiple occurences week after week. The finalized processed data address line is passed to Radar for latitude and longitude coordinates for mapping"
+            "The data is static, and I plan to update it quarterly. It assumes that these events occur every week, even if there is a holiday or unspecified reason. This data is collected from various websites. It is determined to be a weekly event if there are multiple occurences week after week. The processed address line is passed to Radar for latitude and longitude coordinates for mapping."
             ""
         )
-        # Assign days dict accordingly (not used but just saving)
-        # t = df.days.unique()
-        # subdict = {x: day_palette_dict[x] for x in t if x in day_palette_dict}
-        # new_colors = [k for k in subdict.values()]
-        # st.write(day_palette_dict, new_colors)
-        # day_palette = new_colors
-        # st.write(day_palette)
-        # grouped_days_df_complete["color"] = grouped_days_df_complete["Marker"].map(
-        #     day_palette_dict
-        # )
 
     grouped_days_df = (
         (df.groupby("Venue")["Title"].count().reset_index())
