@@ -1,8 +1,7 @@
-import pandas as pd
 import numpy as np
-import streamlit as st
-
+import pandas as pd
 import plotly.express as px
+import streamlit as st
 
 # Adjust the width of the Streamlit page
 st.set_page_config(
