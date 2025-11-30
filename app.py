@@ -11,7 +11,7 @@ st.set_page_config(
 # Add Title
 st.title("Only Weeklies")
 
-# Load example data
+
 @st.cache_data
 def fetch_data():
     # p = pathlib.Path.cwd() / "data" / "full_output_2025-05-22.csv"
