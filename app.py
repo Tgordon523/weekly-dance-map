@@ -1,9 +1,7 @@
-import pandas as pd
 import numpy as np
-import streamlit as st
-import pathlib
-
+import pandas as pd
 import plotly.express as px
+import streamlit as st
 
 # Adjust the width of the Streamlit page
 st.set_page_config(
@@ -14,10 +12,10 @@ st.set_page_config(
 st.title("Only Weeklies")
 
 
-# Load example data
 @st.cache_data
 def fetch_data():
     # p = pathlib.Path.cwd() / "data" / "full_output_2025-05-22.csv"
+    # Currently only chicago and Milwaukee
     p = "https://raw.githubusercontent.com/Tgordon523/weekly-dance-map/a63257f9f447c4808dbb38088d9e016b81c3aeea/data/test_data.csv"
     df = pd.read_csv(p)
     df["state"] = (
