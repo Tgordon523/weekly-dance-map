@@ -18,3 +18,5 @@ jobs:
 
     - name: Install a specific version of ruff
       uses: astral-sh/ruff-action@v3
+      with:
+        args: "format --check --diff"
