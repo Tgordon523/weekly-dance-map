@@ -13,11 +13,11 @@ st.set_page_config(
 # Add Title
 st.title("Only Weeklies")
 
-
 # Load example data
 @st.cache_data
 def fetch_data():
     # p = pathlib.Path.cwd() / "data" / "full_output_2025-05-22.csv"
+    # Currently only chicago and Milwaukee
     p = "https://raw.githubusercontent.com/Tgordon523/weekly-dance-map/a63257f9f447c4808dbb38088d9e016b81c3aeea/data/test_data.csv"
     df = pd.read_csv(p)
     df["state"] = (
